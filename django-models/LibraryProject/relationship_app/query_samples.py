@@ -4,18 +4,18 @@ import os
 import django
 
 # Setup Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'LibraryProject.settings')  # ✅ Make sure this matches your project name
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'LibraryProject.settings')  # Make sure this matches your project
 django.setup()
 
 from relationship_app.models import Author, Book, Library, Librarian
 
-# Optional: Clean up existing data (only for development/testing)
+# Optional: Clean up for repeated runs
 Author.objects.all().delete()
 Book.objects.all().delete()
 Library.objects.all().delete()
 Librarian.objects.all().delete()
 
-# Create sample data
+# Sample data creation
 author1 = Author.objects.create(name="Chinua Achebe")
 author2 = Author.objects.create(name="Wole Soyinka")
 
@@ -30,7 +30,7 @@ librarian1 = Librarian.objects.create(name="Mrs. Grace", library=library1)
 
 # ----------- Required Queries -----------
 
-# ✅ 1. Query all books by a specific author using Author.objects.get(...) and filter(...)
+# ✅ 1. Get all books by a specific author
 author_name = "Chinua Achebe"
 try:
     author = Author.objects.get(name=author_name)
@@ -39,9 +39,9 @@ try:
     for book in books_by_author:
         print(f"- {book.title}")
 except Author.DoesNotExist:
-    print(f"❌ Author named '{author_name}' not found.")
+    print(f"❌ Author '{author_name}' not found.")
 
-# ✅ 2. List all books in a specific library using get()
+# ✅ 2. List all books in a library using .get()
 library_name = "Central Library"
 try:
     library = Library.objects.get(name=library_name)
@@ -49,12 +49,12 @@ try:
     for book in library.books.all():
         print(f"- {book.title}")
 except Library.DoesNotExist:
-    print(f"❌ Library named '{library_name}' not found.")
+    print(f"❌ Library '{library_name}' not found.")
 
-# ✅ 3. Retrieve the librarian for a specific library
+# ✅ 3. Retrieve librarian using Librarian.objects.get(library=...)
 try:
     library = Library.objects.get(name=library_name)
-    librarian = library.librarian  # reverse of OneToOneField
+    librarian = Librarian.objects.get(library=library)
     print(f"\n👩‍🏫 Librarian for {library_name}: {librarian.name}")
 except (Library.DoesNotExist, Librarian.DoesNotExist):
     print(f"❌ Librarian for '{library_name}' not found.")

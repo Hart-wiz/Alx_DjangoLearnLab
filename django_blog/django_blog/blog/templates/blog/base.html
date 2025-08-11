@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Django Blog{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1><a href="{% url 'blog:post_list' %}">Django Blog</a></h1>
+      <nav>
+        <a href="{% url 'blog:post_list' %}">Home</a>
+        <a href="/admin/">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>&copy; {{ now|date:"Y" }} Django Blog</small>
+    </div>
+  </footer>
+
+  <script src="{% static 'blog/app.js' %}"></script>
+</body>
+</html>

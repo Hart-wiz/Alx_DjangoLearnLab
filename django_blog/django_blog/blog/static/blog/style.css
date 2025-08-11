@@ -1,0 +1,78 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #111;
+  background: #fafafa;
+}
+.container {
+  width: min(100%, 960px);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.site-header {
+  background: #1f2937;
+  color: #fff;
+}
+.site-header a {
+  color: #fff;
+  text-decoration: none;
+}
+.site-header nav a {
+  margin-left: 16px;
+  opacity: 0.9;
+}
+.site-header nav a:hover {
+  opacity: 1;
+}
+
+.site-footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+h1,
+h2,
+h3 {
+  margin: 16px 0;
+}
+.post-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+.post-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+}
+.post-card .meta {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 4px 0 12px;
+}
+.post-card .read-more {
+  display: inline-block;
+  margin-top: 8px;
+  color: #2563eb;
+  text-decoration: none;
+}
+.post-card .read-more:hover {
+  text-decoration: underline;
+}
+
+.post .meta {
+  color: #6b7280;
+  font-size: 14px;
+}
+.content {
+  margin-top: 16px;
+  line-height: 1.65;
+}

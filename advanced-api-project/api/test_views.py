@@ -26,7 +26,9 @@ class BookAPITests(APITestCase):
     def setUpTestData(cls):
         # Users
         User = get_user_model()
-        cls.user = User.objects.create_user(username="tester", password="pass1234")
+        cls.username = "tester"
+        cls.password = "pass1234"
+        cls.user = User.objects.create_user(username=cls.username, password=cls.password)
 
         # Authors
         cls.author1 = Author.objects.create(name="Chinua Achebe")
@@ -67,6 +69,10 @@ class BookAPITests(APITestCase):
         # matches api/urls.py path("books/delete/<int:pk>/", ...)
         return reverse("book-delete", args=[pk])
 
+    # Convenience helper to ensure we use self.client.login everywhere
+    def login(self):
+        return self.client.login(username=self.username, password=self.password)
+
     # ---------- READ-ONLY (AllowAny) ----------
     def test_list_books_as_anonymous_ok(self):
         response = self.client.get(self.list_url())
@@ -90,7 +96,7 @@ class BookAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_book_authenticated_ok(self):
-        self.client.force_login(self.user)
+        self.assertTrue(self.login())
         payload = {
             "title": "Arrow of God",
             "publication_year": 1964,
@@ -104,7 +110,7 @@ class BookAPITests(APITestCase):
         self.assertTrue(Book.objects.filter(title="Arrow of God").exists())
 
     def test_create_book_future_year_rejected(self):
-        self.client.force_login(self.user)
+        self.assertTrue(self.login())
         future_year = date.today().year + 1
         payload = {
             "title": "From the Future",
@@ -126,7 +132,7 @@ class BookAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_update_book_authenticated_ok(self):
-        self.client.force_login(self.user)
+        self.assertTrue(self.login())
         payload = {
             "title": "Things Fall Apart (Updated)",
             "publication_year": 1958,
@@ -138,7 +144,7 @@ class BookAPITests(APITestCase):
         self.assertEqual(self.book1.title, "Things Fall Apart (Updated)")
 
     def test_partial_update_book_authenticated_ok(self):
-        self.client.force_login(self.user)
+        self.assertTrue(self.login())
         payload = {"title": "Things Fall Apart (2nd ed.)"}
         response = self.client.patch(self.update_url(self.book1.id), payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -151,7 +157,7 @@ class BookAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_book_authenticated_ok(self):
-        self.client.force_login(self.user)
+        self.assertTrue(self.login())
         response = self.client.delete(self.delete_url(self.book2.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Book.objects.filter(id=self.book2.id).exists())

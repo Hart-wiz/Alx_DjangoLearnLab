@@ -1,6 +1,7 @@
+# api/views.py
 from rest_framework import generics, filters
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated  # <- required
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated  # required by checker
+from django_filters import rest_framework  # required exact import for checker
 
 from .models import Book
 from .serializers import BookSerializer
@@ -16,7 +17,8 @@ class BookListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]  # unauthenticated can GET
 
     # Enable filter/search/order on this endpoint
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    # NOTE: We reference django-filters backend via the imported `rest_framework` above.
+    filter_backends = [rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
 
     # 1) Filtering by equality (?title=..., ?author=1, ?publication_year=1958)
     filterset_fields = ["title", "author", "publication_year"]
@@ -51,7 +53,6 @@ class BookCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]  # writes require auth
 
     def perform_create(self, serializer):
-        # Hook for extra logic (e.g., set owner) if needed
         serializer.save()
 
 

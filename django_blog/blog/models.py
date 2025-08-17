@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 class Post(models.Model):
@@ -8,7 +10,7 @@ class Post(models.Model):
     published_date = models.DateTimeField(auto_now_add=True)
     # One author -> many posts
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name="posts",
     )

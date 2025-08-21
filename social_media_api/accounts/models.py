@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 
 class User(AbstractUser):
-    bio = models.CharField(max_length=160, blank=True)
+    bio = models.TextField(max_length=160, blank=True)
     profile_picture = models.ImageField(upload_to='avatars/', blank=True, null=True)
     # A follows B  ⇒  B.followers includes A, and A.following includes B
     followers = models.ManyToManyField(

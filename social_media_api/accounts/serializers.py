@@ -44,3 +44,7 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid credentials.')
         attrs['user'] = user
         return attrs
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('bio', 'profile_picture', 'email')  # limit what can be edited

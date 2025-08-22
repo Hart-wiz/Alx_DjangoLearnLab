@@ -54,7 +54,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import User
+from .models import CustomUser
 
 
 User = get_user_model()
@@ -77,7 +77,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, trim_whitespace=False)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('username', 'email', 'password', 'bio', 'profile_picture')
 
     def validate_password(self, value):
@@ -106,7 +106,7 @@ class LoginSerializer(serializers.Serializer):
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('bio', 'profile_picture', 'email')  # limit what can be updated
 
 
@@ -116,5 +116,5 @@ class UserSerializer(serializers.ModelSerializer):
     following_count = serializers.IntegerField(source="following.count", read_only=True)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ["id", "username", "email", "bio", "profile_picture", "followers_count", "following_count"]

@@ -1,9 +1,8 @@
 # posts/views.py
 from django.db.models import Prefetch
-from rest_framework import viewsets, permissions, filters, status
+from rest_framework import viewsets,generics, permissions, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
 from .models import Post, Comment
 from .serializers import PostSerializer, PostDetailSerializer, CommentSerializer
 from .permissions import IsAuthorOrReadOnly
@@ -99,3 +98,14 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+#......................... feed view.................................
+class FeedView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Get all users this user follows
+        following_users = self.request.user.following.all()
+        # Return posts authored by followed users
+        return Post.objects.filter(author__in=following_users).order_by("-created_at")

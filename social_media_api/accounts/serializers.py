@@ -54,6 +54,8 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from .models import User
+
 
 User = get_user_model()
 
@@ -106,3 +108,13 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('bio', 'profile_picture', 'email')  # limit what can be updated
+
+
+# follows and unfollow
+class UserSerializer(serializers.ModelSerializer):
+    followers_count = serializers.IntegerField(source="followers.count", read_only=True)
+    following_count = serializers.IntegerField(source="following.count", read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "bio", "profile_picture", "followers_count", "following_count"]

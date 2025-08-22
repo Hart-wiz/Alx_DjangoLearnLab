@@ -1,6 +1,9 @@
-Django
+Django>=5.0,<6.0
+djangorestframework
 gunicorn
+dj-database-url
 psycopg2-binary
 whitenoise
-dj-database-url
-python-dotenv
+python-decouple
+django-cors-headers
+pillow

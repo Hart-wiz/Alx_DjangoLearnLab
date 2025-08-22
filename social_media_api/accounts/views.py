@@ -1,4 +1,4 @@
-from rest_framework import permissions, status
+from rest_framework import permissions, status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
@@ -74,3 +74,19 @@ class UnfollowUserView(APIView):
             {"message": f"You unfollowed {target_user.username}"},
             status=status.HTTP_200_OK,
         )
+
+
+# ✅ Extra: GenericAPIView examples with CustomUser.objects.all()
+class UserListView(generics.ListAPIView):
+    """List all users (requires authentication)."""
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class UserDetailView(generics.RetrieveAPIView):
+    """Retrieve a user by ID (requires authentication)."""
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = "id"

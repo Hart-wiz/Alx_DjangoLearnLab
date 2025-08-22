@@ -109,3 +109,46 @@ class FeedView(generics.ListAPIView):
         following_users = self.request.user.following.all()
         # Return posts authored by followed users
         return Post.objects.filter(author__in=following_users).order_by("-created_at")
+
+
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from .models import Post, Like
+from .serializers import PostSerializer
+from notifications.utils import create_notification  # we'll add this utility
+
+class LikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+        if not created:
+            return Response({"detail": "You already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create notification for post author
+        if post.author != request.user:
+            create_notification(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target=post
+            )
+
+        return Response({"message": "Post liked successfully."}, status=status.HTTP_201_CREATED)
+
+
+class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(user=request.user, post=post).first()
+
+        if like:
+            like.delete()
+            return Response({"message": "Post unliked successfully."}, status=status.HTTP_200_OK)
+
+        return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)

@@ -64,3 +64,5 @@ class CustomUser(AbstractUser):
 
     def is_following(self, user):
         return self.following.filter(id=user.id).exists()
+
+
